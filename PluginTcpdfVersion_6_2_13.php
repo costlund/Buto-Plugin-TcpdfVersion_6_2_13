@@ -16,8 +16,10 @@ class PluginTcpdfVersion_6_2_13{
      * Merge data.
      */
     $data = new PluginWfArray(array_merge($data->get(), $widget_data['data']));
-    
-    //$data->set('logo', '/web/theme/wf/horsedata/arab-horse_24x24.png');
+    /**
+     * Image path in SetHeaderData should be set from the web folder. 
+     */
+    define ('K_PATH_IMAGES', '');
     /**
      * Include tcpdf.
      */
@@ -34,7 +36,10 @@ class PluginTcpdfVersion_6_2_13{
     $pdf->SetTitle($data->get('title'));
     $pdf->SetSubject($data->get('subject'));
     $pdf->SetKeywords($data->get('keywords'));
-    $pdf->SetHeaderData('../../../../../..'.$data->get('header_logo'), $data->get('header_logo_width'), $data->get('header_title'), $data->get('header_string'));
+    if($data->get('header_logo') && $data->get('header_logo_width')){
+      $header_logo = wfArray::get($GLOBALS, 'sys/web_dir').$data->get('header_logo');
+      $pdf->SetHeaderData($header_logo, $data->get('header_logo_width'), $data->get('header_title'), $data->get('header_string'));
+    }
     /**
      * Standard values.
      */
@@ -82,10 +87,16 @@ class PluginTcpdfVersion_6_2_13{
             $pdf = $this->MoveY($pdf, $item);
           }elseif($method == 'SetTextColor'){
             $pdf = $this->SetTextColor($pdf, $item);
+          }elseif($method == 'SetFillColor'){
+            $pdf = $this->SetFillColor($pdf, $item);
           }elseif($method == 'WriteHTML'){
             $pdf = $this->WriteHTML($pdf, $item);
           }elseif($method == 'Line'){
             $pdf = $this->Line($pdf, $item);
+          }elseif($method == 'Image'){
+            $pdf = $this->Image($pdf, $item);
+          }elseif($method == 'Text'){
+            $pdf = $this->Text($pdf, $item);
           }
         }
       }
@@ -94,7 +105,6 @@ class PluginTcpdfVersion_6_2_13{
      * Run method if set.
      */
     if($data->get('method/plugin') && $data->get('method/method')){
-      //wfHelp::yml_dump($data, true);
       wfPlugin::includeonce($data->get('method/plugin'));
       $obj = wfSettings::getPluginObj($data->get('method/plugin'));
       $method = $data->get('method/method');
@@ -203,6 +213,25 @@ class PluginTcpdfVersion_6_2_13{
     $col1 = 0; $col2 = -1; $col3 = -1; $col4 = -1; $ret = false; $name = '';
     if($item->get('data')){foreach ($item->get('data') as $key2 => $value2){eval('$'.$key2.' = "'.$value2.'";');}}
     $pdf->SetTextColor( $col1, $col2, $col3, $col4, $ret, $name );
+    return $pdf;
+  }
+  private function SetFillColor($pdf, $item){
+    $col1 = 0; $col2 = 0; $col3 = 0;
+    if($item->get('data')){foreach ($item->get('data') as $key2 => $value2){eval('$'.$key2.' = "'.$value2.'";');}}
+    $pdf->SetFillColor( $col1, $col2, $col3 );
+    return $pdf;
+  }
+  private function Image($pdf, $item){
+    $file; $x = ''; $y = ''; $w = 0; $h = 0; $type = ''; $link = ''; $align = ''; $resize = false; $dpi = 300; $palign = ''; $ismask = false; $imgmask = false; $border = 0; $fitbox = false; $hidden = false; $fitonpage = false; $alt = false; $altimgs = array();
+    if($item->get('data')){foreach ($item->get('data') as $key2 => $value2){eval('$'.$key2.' = "'.$value2.'";');}}
+    $file = wfSettings::replaceDir($file);
+    $pdf->Image( $file, $x, $y, $w, $h, $type, $link, $align, $resize, $dpi, $palign, $ismask, $imgmask, $border, $fitbox, $hidden, $fitonpage, $alt, $altimgs );
+    return $pdf;
+  }
+  private function Text($pdf, $item){
+    $x = ''; $y = ''; $txt = ''; $fstroke = false; $fclip = false; $ffill = true; $border = 0; $ln = 0; $align = ''; $fill = false; $link = ''; $stretch = 0; $ignore_min_height = false; $calign = 'T'; $valign = 'M'; $rtloff = false;
+    if($item->get('data')){foreach ($item->get('data') as $key2 => $value2){eval('$'.$key2.' = "'.$value2.'";');}}
+    $pdf->Text( $x, $y, $txt, $fstroke, $fclip, $ffill, $border, $ln, $align, $fill, $link, $stretch, $ignore_min_height, $calign, $valign, $rtloff );
     return $pdf;
   }
   public function data_method_example($data){
