@@ -38,7 +38,6 @@ class PluginTcpdfVersion_6_2_13{
     $pdf->SetKeywords($data->get('keywords'));
     if($data->get('header_logo') && $data->get('header_logo_width')){
       $header_logo = wfArray::get($GLOBALS, 'sys/web_dir').$data->get('header_logo');
-      $header_logo = null;
       $pdf->SetHeaderData($header_logo, $data->get('header_logo_width'), $data->get('header_title'), $data->get('header_string'));
     }
     /**
