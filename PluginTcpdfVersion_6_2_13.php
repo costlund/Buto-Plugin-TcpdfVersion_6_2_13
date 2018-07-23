@@ -38,6 +38,7 @@ class PluginTcpdfVersion_6_2_13{
     $pdf->SetKeywords($data->get('keywords'));
     if($data->get('header_logo') && $data->get('header_logo_width')){
       $header_logo = wfArray::get($GLOBALS, 'sys/web_dir').$data->get('header_logo');
+      $header_logo = null;
       $pdf->SetHeaderData($header_logo, $data->get('header_logo_width'), $data->get('header_title'), $data->get('header_string'));
     }
     /**
@@ -55,6 +56,11 @@ class PluginTcpdfVersion_6_2_13{
             require_once(dirname(__FILE__).'/lang/eng.php');
             $pdf->setLanguageArray($l);
     }
+    
+    
+    $pdf->setPrintHeader($data->get('print_header'));
+    $pdf->setPrintFooter($data->get('print_footer'));
+    
     /**
      * Data method.
      */
@@ -73,30 +79,13 @@ class PluginTcpdfVersion_6_2_13{
         foreach ($valu as $key => $value) {
           $item = new PluginWfArray($value);
           $method  = $item->get('method');
-          if($method == 'MultiCell'){
-            $pdf = $this->MultiCell($pdf, $item, $data);
-          }elseif($method == 'Cell'){
-            $pdf = $this->Cell($pdf, $item);
-          }elseif($method == 'SetFont'){
-            $pdf = $this->SetFont($pdf, $item);
-          }elseif($method == 'AddPage'){
-            $pdf = $this->AddPage($pdf, $item);
-          }elseif($method == 'Ln'){
-            $pdf = $this->Ln($pdf, $item);
-          }elseif($method == 'MoveY'){
-            $pdf = $this->MoveY($pdf, $item);
-          }elseif($method == 'SetTextColor'){
-            $pdf = $this->SetTextColor($pdf, $item);
-          }elseif($method == 'SetFillColor'){
-            $pdf = $this->SetFillColor($pdf, $item);
-          }elseif($method == 'WriteHTML'){
-            $pdf = $this->WriteHTML($pdf, $item);
-          }elseif($method == 'Line'){
-            $pdf = $this->Line($pdf, $item);
-          }elseif($method == 'Image'){
-            $pdf = $this->Image($pdf, $item);
-          }elseif($method == 'Text'){
-            $pdf = $this->Text($pdf, $item);
+          if($method == 'Many'){
+            foreach ($item->get('data') as $key2 => $value2) {
+              $item2 = new PluginWfArray($value2);
+              $pdf = $this->runMethod($item2->get('method'), $pdf, $item2, $data);
+            }
+          }else{
+            $pdf = $this->runMethod($method, $pdf, $item, $data);
           }
         }
       }
@@ -115,6 +104,34 @@ class PluginTcpdfVersion_6_2_13{
      */
     $pdf->Output($data->get('filename'), 'I');
     exit;
+  }
+  private function runMethod($method, $pdf, $item, $data){
+    if($method == 'MultiCell'){
+      $pdf = $this->MultiCell($pdf, $item, $data);
+    }elseif($method == 'Cell'){
+      $pdf = $this->Cell($pdf, $item);
+    }elseif($method == 'SetFont'){
+      $pdf = $this->SetFont($pdf, $item);
+    }elseif($method == 'AddPage'){
+      $pdf = $this->AddPage($pdf, $item);
+    }elseif($method == 'Ln'){
+      $pdf = $this->Ln($pdf, $item);
+    }elseif($method == 'MoveY'){
+      $pdf = $this->MoveY($pdf, $item);
+    }elseif($method == 'SetTextColor'){
+      $pdf = $this->SetTextColor($pdf, $item);
+    }elseif($method == 'SetFillColor'){
+      $pdf = $this->SetFillColor($pdf, $item);
+    }elseif($method == 'WriteHTML'){
+      $pdf = $this->WriteHTML($pdf, $item);
+    }elseif($method == 'Line'){
+      $pdf = $this->Line($pdf, $item);
+    }elseif($method == 'Image'){
+      $pdf = $this->Image($pdf, $item);
+    }elseif($method == 'Text'){
+      $pdf = $this->Text($pdf, $item);
+    }
+    return $pdf;
   }
   private function Line($pdf, $item){
     $x1=10; $y1=10; $x2=20; $y2=20; $style = array();
@@ -141,7 +158,7 @@ class PluginTcpdfVersion_6_2_13{
     $h = 10;
     $txt = 'Multicell text.';
     $border = 1;
-    $align = 'J';
+    $align = 'L';
     $fill = false;
     $ln = 1;
     $x = '';
