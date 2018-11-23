@@ -6,12 +6,6 @@ plugin:
   -
     name: wf/array
     version: 1.0.1
-  -
-    name: $data->get(data_method/plugin
-    version: '1.0'
-  -
-    name: $data->get(method/plugin
-    version: '1.0'
 sys:
   -
     name: mercury
