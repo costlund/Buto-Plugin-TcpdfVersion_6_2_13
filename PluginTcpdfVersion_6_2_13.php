@@ -4,6 +4,7 @@ class PluginTcpdfVersion_6_2_13{
    <p>Add method param to fill $pdf with data.</p>
    */
   public function widget_output($widget_data){
+    //wfHelp::yml_dump($widget_data, true);
     /**
      * Include.
      */
@@ -19,6 +20,9 @@ class PluginTcpdfVersion_6_2_13{
     /**
      * Image path in SetHeaderData should be set from the web folder. 
      */
+//    ini_set('display_errors', false);
+//    error_reporting(0);
+    //wfHelp::yml_dump(wfGlobals::getWebDir(), true);
     define ('K_PATH_IMAGES', '');
     /**
      * Include tcpdf.

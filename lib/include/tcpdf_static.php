@@ -1916,6 +1916,11 @@ class TCPDF_STATIC {
 		$alt = array_unique($alt);
 		//var_dump($alt);exit;//DEBUG
 		foreach ($alt as $path) {
+                  
+                  //wfHelp::yml_dump(wfFilesystem::fileExist($path));
+//                  if(!wfFilesystem::fileExist($path)){
+//                    return false;
+//                  }
 			$ret = @file_get_contents($path);
 			if ($ret !== false) {
 			    return $ret;
@@ -1946,6 +1951,7 @@ class TCPDF_STATIC {
 				}
 			}
 		}
+                //wfHelp::yml_dump($alt, true);
 		return false;
 	}
 

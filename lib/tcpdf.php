@@ -6847,6 +6847,10 @@ class TCPDF {
 					$file = $tfile;
 				}
 			}
+                       
+                        //$file = wfGlobals::getWebDir().$file;
+                        //wfHelp::yml_dump($file);
+                        
 			if (($imsize = @getimagesize($file)) === FALSE) {
 				if (in_array($file, $this->imagekeys)) {
 					// get existing image data
