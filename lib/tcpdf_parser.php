@@ -108,9 +108,9 @@ class TCPDF_PARSER {
 			$this->Error('Invalid PDF data: missing %PDF header.');
 		}
 		// get PDF content string
-		$this->pdfdata = substr($data, $trimpos);
+		$this->pdfdata = wfPhpfunc::substr($data, $trimpos);
 		// get length
-		$pdflen = strlen($this->pdfdata);
+		$pdflen = wfPhpfunc::strlen($this->pdfdata);
 		// set configuration parameters
 		$this->setConfig($cfg);
 		// get xref and trailer data
@@ -220,7 +220,7 @@ class TCPDF_PARSER {
 				// we are on another section
 				break;
 			}
-			$offset += strlen($matches[0][0]);
+			$offset += wfPhpfunc::strlen($matches[0][0]);
 			if ($matches[3][0] == 'n') {
 				// create unique object index: [object number]_[generation number]
 				$index = $obj_num.'_'.intval($matches[2][0]);
@@ -516,9 +516,9 @@ class TCPDF_PARSER {
 				// name object
 				$objtype = $char;
 				++$offset;
-				if (preg_match('/^([^\x00\x09\x0a\x0c\x0d\x20\s\x28\x29\x3c\x3e\x5b\x5d\x7b\x7d\x2f\x25]+)/', substr($this->pdfdata, $offset, 256), $matches) == 1) {
+				if (preg_match('/^([^\x00\x09\x0a\x0c\x0d\x20\s\x28\x29\x3c\x3e\x5b\x5d\x7b\x7d\x2f\x25]+)/', wfPhpfunc::substr($this->pdfdata, $offset, 256), $matches) == 1) {
 					$objval = $matches[1]; // unescaped value
-					$offset += strlen($objval);
+					$offset += wfPhpfunc::strlen($objval);
 				}
 				break;
 			}
@@ -552,7 +552,7 @@ class TCPDF_PARSER {
 						}
 						++$strpos;
 					}
-					$objval = substr($this->pdfdata, $offset, ($strpos - $offset - 1));
+					$objval = wfPhpfunc::substr($this->pdfdata, $offset, ($strpos - $offset - 1));
 					$offset = $strpos;
 				}
 				break;
@@ -598,10 +598,10 @@ class TCPDF_PARSER {
 					// hexadecimal string object
 					$objtype = $char;
 					++$offset;
-					if (($char == '<') AND (preg_match('/^([0-9A-Fa-f\x09\x0a\x0c\x0d\x20]+)>/iU', substr($this->pdfdata, $offset), $matches) == 1)) {
+					if (($char == '<') AND (preg_match('/^([0-9A-Fa-f\x09\x0a\x0c\x0d\x20]+)>/iU', wfPhpfunc::substr($this->pdfdata, $offset), $matches) == 1)) {
 						// remove white space characters
 						$objval = strtr($matches[1], "\x09\x0a\x0c\x0d\x20", '');
-						$offset += strlen($matches[0]);
+						$offset += wfPhpfunc::strlen($matches[0]);
 					} elseif (($endpos = strpos($this->pdfdata, '>', $offset)) !== FALSE) {
 						$offset = $endpos + 1;
                     }
@@ -609,46 +609,46 @@ class TCPDF_PARSER {
 				break;
 			}
 			default: {
-				if (substr($this->pdfdata, $offset, 6) == 'endobj') {
+				if (wfPhpfunc::substr($this->pdfdata, $offset, 6) == 'endobj') {
 					// indirect object
 					$objtype = 'endobj';
 					$offset += 6;
-				} elseif (substr($this->pdfdata, $offset, 4) == 'null') {
+				} elseif (wfPhpfunc::substr($this->pdfdata, $offset, 4) == 'null') {
 					// null object
 					$objtype = 'null';
 					$offset += 4;
 					$objval = 'null';
-				} elseif (substr($this->pdfdata, $offset, 4) == 'true') {
+				} elseif (wfPhpfunc::substr($this->pdfdata, $offset, 4) == 'true') {
 					// boolean true object
 					$objtype = 'boolean';
 					$offset += 4;
 					$objval = 'true';
-				} elseif (substr($this->pdfdata, $offset, 5) == 'false') {
+				} elseif (wfPhpfunc::substr($this->pdfdata, $offset, 5) == 'false') {
 					// boolean false object
 					$objtype = 'boolean';
 					$offset += 5;
 					$objval = 'false';
-				} elseif (substr($this->pdfdata, $offset, 6) == 'stream') {
+				} elseif (wfPhpfunc::substr($this->pdfdata, $offset, 6) == 'stream') {
 					// start stream object
 					$objtype = 'stream';
 					$offset += 6;
-					if (preg_match('/^([\r]?[\n])/isU', substr($this->pdfdata, $offset), $matches) == 1) {
-						$offset += strlen($matches[0]);
-						if (preg_match('/(endstream)[\x09\x0a\x0c\x0d\x20]/isU', substr($this->pdfdata, $offset), $matches, PREG_OFFSET_CAPTURE) == 1) {
-							$objval = substr($this->pdfdata, $offset, $matches[0][1]);
+					if (preg_match('/^([\r]?[\n])/isU', wfPhpfunc::substr($this->pdfdata, $offset), $matches) == 1) {
+						$offset += wfPhpfunc::strlen($matches[0]);
+						if (preg_match('/(endstream)[\x09\x0a\x0c\x0d\x20]/isU', wfPhpfunc::substr($this->pdfdata, $offset), $matches, PREG_OFFSET_CAPTURE) == 1) {
+							$objval = wfPhpfunc::substr($this->pdfdata, $offset, $matches[0][1]);
 							$offset += $matches[1][1];
 						}
 					}
-				} elseif (substr($this->pdfdata, $offset, 9) == 'endstream') {
+				} elseif (wfPhpfunc::substr($this->pdfdata, $offset, 9) == 'endstream') {
 					// end stream object
 					$objtype = 'endstream';
 					$offset += 9;
-				} elseif (preg_match('/^([0-9]+)[\s]+([0-9]+)[\s]+R/iU', substr($this->pdfdata, $offset, 33), $matches) == 1) {
+				} elseif (preg_match('/^([0-9]+)[\s]+([0-9]+)[\s]+R/iU', wfPhpfunc::substr($this->pdfdata, $offset, 33), $matches) == 1) {
 					// indirect object reference
 					$objtype = 'objref';
-					$offset += strlen($matches[0]);
+					$offset += wfPhpfunc::strlen($matches[0]);
 					$objval = intval($matches[1]).'_'.intval($matches[2]);
-				} elseif (preg_match('/^([0-9]+)[\s]+([0-9]+)[\s]+obj/iU', substr($this->pdfdata, $offset, 33), $matches) == 1) {
+				} elseif (preg_match('/^([0-9]+)[\s]+([0-9]+)[\s]+obj/iU', wfPhpfunc::substr($this->pdfdata, $offset, 33), $matches) == 1) {
 					// object start
 					$objtype = 'obj';
 					$objval = intval($matches[1]).'_'.intval($matches[2]);
@@ -656,7 +656,7 @@ class TCPDF_PARSER {
 				} elseif (($numlen = strspn($this->pdfdata, '+-.0123456789', $offset)) > 0) {
 					// numeric object
 					$objtype = 'numeric';
-					$objval = substr($this->pdfdata, $offset, $numlen);
+					$objval = wfPhpfunc::substr($this->pdfdata, $offset, $numlen);
 					$offset += $numlen;
 				}
 				break;
@@ -688,7 +688,7 @@ class TCPDF_PARSER {
 			return array('null', 'null', $offset);
 		}
 		// starting position of object content
-		$offset += strlen($objref);
+		$offset += wfPhpfunc::strlen($objref);
 		// get array of object content
 		$objdata = array();
 		$i = 0; // object main index
@@ -742,7 +742,7 @@ class TCPDF_PARSER {
 	 */
 	protected function decodeStream($sdic, $stream) {
 		// get stream length and filters
-		$slength = strlen($stream);
+		$slength = wfPhpfunc::strlen($stream);
 		if ($slength <= 0) {
 			return array('', array());
 		}
@@ -753,7 +753,7 @@ class TCPDF_PARSER {
 					// get declared stream length
 					$declength = intval($sdic[($k + 1)][1]);
 					if ($declength < $slength) {
-						$stream = substr($stream, 0, $declength);
+						$stream = wfPhpfunc::substr($stream, 0, $declength);
 						$slength = $declength;
 					}
 				} elseif (($v[1] == 'Filter') AND (isset($sdic[($k + 1)]))) {

@@ -306,21 +306,21 @@ class TCPDF_COLORS {
 				}
 				return $returncolor;
 			}
-		} elseif ((substr($color, 0, 4) != 'cmyk') AND (substr($color, 0, 3) != 'rgb') AND (($dotpos = strpos($color, '.')) !== false)) {
+		} elseif ((wfPhpfunc::substr($color, 0, 4) != 'cmyk') AND (wfPhpfunc::substr($color, 0, 3) != 'rgb') AND (($dotpos = strpos($color, '.')) !== false)) {
 			// remove class parent (i.e.: color.red)
-			$color = substr($color, ($dotpos + 1));
+			$color = wfPhpfunc::substr($color, ($dotpos + 1));
 			if ($color == 'transparent') {
 				// transparent (empty array)
 				return array();
 			}
 		}
-		if (strlen($color) == 0) {
+		if (wfPhpfunc::strlen($color) == 0) {
 			return $defcol;
 		}
 		// RGB ARRAY
-		if (substr($color, 0, 3) == 'rgb') {
-			$codes = substr($color, 4);
-			$codes = str_replace(')', '', $codes);
+		if (wfPhpfunc::substr($color, 0, 3) == 'rgb') {
+			$codes = wfPhpfunc::substr($color, 4);
+			$codes = wfPhpfunc::str_replace(')', '', $codes);
 			$returncolor = explode(',', $codes);
 			foreach ($returncolor as $key => $val) {
 				if (strpos($val, '%') > 0) {
@@ -335,9 +335,9 @@ class TCPDF_COLORS {
 			return $returncolor;
 		}
 		// CMYK ARRAY
-		if (substr($color, 0, 4) == 'cmyk') {
-			$codes = substr($color, 5);
-			$codes = str_replace(')', '', $codes);
+		if (wfPhpfunc::substr($color, 0, 4) == 'cmyk') {
+			$codes = wfPhpfunc::substr($color, 5);
+			$codes = wfPhpfunc::str_replace(')', '', $codes);
 			$returncolor = explode(',', $codes);
 			foreach ($returncolor as $key => $val) {
 				if (strpos($val, '%') !== false) {
@@ -365,15 +365,15 @@ class TCPDF_COLORS {
 				return $returncolor;
 			}
 		} else {
-			$color_code = substr($color, 1);
+			$color_code = wfPhpfunc::substr($color, 1);
 		}
 		// HEXADECIMAL REPRESENTATION
-		switch (strlen($color_code)) {
+		switch (wfPhpfunc::strlen($color_code)) {
 			case 3: {
 				// 3-digit RGB hexadecimal representation
-				$r = substr($color_code, 0, 1);
-				$g = substr($color_code, 1, 1);
-				$b = substr($color_code, 2, 1);
+				$r = wfPhpfunc::substr($color_code, 0, 1);
+				$g = wfPhpfunc::substr($color_code, 1, 1);
+				$b = wfPhpfunc::substr($color_code, 2, 1);
 				$returncolor = array();
 				$returncolor['R'] = max(0, min(255, hexdec($r.$r)));
 				$returncolor['G'] = max(0, min(255, hexdec($g.$g)));
@@ -383,18 +383,18 @@ class TCPDF_COLORS {
 			case 6: {
 				// 6-digit RGB hexadecimal representation
 				$returncolor = array();
-				$returncolor['R'] = max(0, min(255, hexdec(substr($color_code, 0, 2))));
-				$returncolor['G'] = max(0, min(255, hexdec(substr($color_code, 2, 2))));
-				$returncolor['B'] = max(0, min(255, hexdec(substr($color_code, 4, 2))));
+				$returncolor['R'] = max(0, min(255, hexdec(wfPhpfunc::substr($color_code, 0, 2))));
+				$returncolor['G'] = max(0, min(255, hexdec(wfPhpfunc::substr($color_code, 2, 2))));
+				$returncolor['B'] = max(0, min(255, hexdec(wfPhpfunc::substr($color_code, 4, 2))));
 				break;
 			}
 			case 8: {
 				// 8-digit CMYK hexadecimal representation
 				$returncolor = array();
-				$returncolor['C'] = max(0, min(100, round(hexdec(substr($color_code, 0, 2)) / 2.55)));
-				$returncolor['M'] = max(0, min(100, round(hexdec(substr($color_code, 2, 2)) / 2.55)));
-				$returncolor['Y'] = max(0, min(100, round(hexdec(substr($color_code, 4, 2)) / 2.55)));
-				$returncolor['K'] = max(0, min(100, round(hexdec(substr($color_code, 6, 2)) / 2.55)));
+				$returncolor['C'] = max(0, min(100, round(hexdec(wfPhpfunc::substr($color_code, 0, 2)) / 2.55)));
+				$returncolor['M'] = max(0, min(100, round(hexdec(wfPhpfunc::substr($color_code, 2, 2)) / 2.55)));
+				$returncolor['Y'] = max(0, min(100, round(hexdec(wfPhpfunc::substr($color_code, 4, 2)) / 2.55)));
+				$returncolor['K'] = max(0, min(100, round(hexdec(wfPhpfunc::substr($color_code, 6, 2)) / 2.55)));
 				break;
 			}
 			default: {
@@ -444,8 +444,8 @@ class TCPDF_COLORS {
 	 * @public static
 	 */
 	public static function _JScolor($color) {
-		if (substr($color, 0, 1) == '#') {
-			return sprintf("['RGB',%F,%F,%F]", (hexdec(substr($color, 1, 2)) / 255), (hexdec(substr($color, 3, 2)) / 255), (hexdec(substr($color, 5, 2)) / 255));
+		if (wfPhpfunc::substr($color, 0, 1) == '#') {
+			return sprintf("['RGB',%F,%F,%F]", (hexdec(wfPhpfunc::substr($color, 1, 2)) / 255), (hexdec(wfPhpfunc::substr($color, 3, 2)) / 255), (hexdec(wfPhpfunc::substr($color, 5, 2)) / 255));
 		}
 		if (!in_array($color, self::$jscolor)) {
 			// default transparent color

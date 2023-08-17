@@ -305,7 +305,7 @@ class TCPDF2DBarcode {
 			case 'RAW2': { // RAW MODE
 				// remove spaces
 				$code = preg_replace('/[\s]*/si', '', $code);
-				if (strlen($code) < 3) {
+				if (wfPhpfunc::strlen($code) < 3) {
 					break;
 				}
 				if ($qrtype == 'RAW') {
@@ -313,11 +313,11 @@ class TCPDF2DBarcode {
 					$rows = explode(',', $code);
 				} else { // RAW2
 					// rows enclosed in square parentheses
-					$code = substr($code, 1, -1);
+					$code = wfPhpfunc::substr($code, 1, -1);
 					$rows = explode('][', $code);
 				}
 				$this->barcode_array['num_rows'] = count($rows);
-				$this->barcode_array['num_cols'] = strlen($rows[0]);
+				$this->barcode_array['num_cols'] = wfPhpfunc::strlen($rows[0]);
 				$this->barcode_array['bcode'] = array();
 				foreach ($rows as $r) {
 					$this->barcode_array['bcode'][] = str_split($r, 1);

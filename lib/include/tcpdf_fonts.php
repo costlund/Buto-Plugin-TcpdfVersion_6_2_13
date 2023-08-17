@@ -79,13 +79,13 @@ class TCPDF_FONTS {
 		// build new font name for TCPDF compatibility
 		$font_path_parts = pathinfo($fontfile);
 		if (!isset($font_path_parts['filename'])) {
-			$font_path_parts['filename'] = substr($font_path_parts['basename'], 0, -(strlen($font_path_parts['extension']) + 1));
+			$font_path_parts['filename'] = wfPhpfunc::substr($font_path_parts['basename'], 0, -(wfPhpfunc::strlen($font_path_parts['extension']) + 1));
 		}
 		$font_name = strtolower($font_path_parts['filename']);
 		$font_name = preg_replace('/[^a-z0-9_]/', '', $font_name);
 		$search  = array('bold', 'oblique', 'italic', 'regular');
 		$replace = array('b', 'i', 'i', '');
-		$font_name = str_replace($search, $replace, $font_name);
+		$font_name = wfPhpfunc::str_replace($search, $replace, $font_name);
 		if (empty($font_name)) {
 			// set generic name
 			$font_name = 'tcpdffont';
@@ -103,13 +103,13 @@ class TCPDF_FONTS {
 		$fmetric['ctg'] = $font_name.'.ctg.z';
 		// get font data
 		$font = file_get_contents($fontfile);
-		$fmetric['originalsize'] = strlen($font);
+		$fmetric['originalsize'] = wfPhpfunc::strlen($font);
 		// autodetect font type
 		if (empty($fonttype)) {
 			if (TCPDF_STATIC::_getULONG($font, 0) == 0x10000) {
 				// True Type (Unicode or not)
 				$fonttype = 'TrueTypeUnicode';
-			} elseif (substr($font, 0, 4) == 'OTTO') {
+			} elseif (wfPhpfunc::substr($font, 0, 4) == 'OTTO') {
 				// Open Type (Unicode or not)
 				//Unsupported font format: OpenType with CFF data
 				return false;
@@ -168,21 +168,21 @@ class TCPDF_FONTS {
 		if ($fmetric['type'] == 'Type1') {
 			// ---------- TYPE 1 ----------
 			// read first segment
-			$a = unpack('Cmarker/Ctype/Vsize', substr($font, 0, 6));
+			$a = unpack('Cmarker/Ctype/Vsize', wfPhpfunc::substr($font, 0, 6));
 			if ($a['marker'] != 128) {
 				// Font file is not a valid binary Type1
 				return false;
 			}
 			$fmetric['size1'] = $a['size'];
-			$data = substr($font, 6, $fmetric['size1']);
+			$data = wfPhpfunc::substr($font, 6, $fmetric['size1']);
 			// read second segment
-			$a = unpack('Cmarker/Ctype/Vsize', substr($font, (6 + $fmetric['size1']), 6));
+			$a = unpack('Cmarker/Ctype/Vsize', wfPhpfunc::substr($font, (6 + $fmetric['size1']), 6));
 			if ($a['marker'] != 128) {
 				// Font file is not a valid binary Type1
 				return false;
 			}
 			$fmetric['size2'] = $a['size'];
-			$encrypted = substr($font, (12 + $fmetric['size1']), $fmetric['size2']);
+			$encrypted = wfPhpfunc::substr($font, (12 + $fmetric['size1']), $fmetric['size2']);
 			$data .= $encrypted;
 			// store compressed font
 			$fmetric['file'] .= '.z';
@@ -222,7 +222,7 @@ class TCPDF_FONTS {
 			$r = 55665; // eexec encryption constant
 			$c1 = 52845;
 			$c2 = 22719;
-			$elen = strlen($encrypted);
+			$elen = wfPhpfunc::strlen($encrypted);
 			$eplain = '';
 			for ($i = 0; $i < $elen; ++$i) {
 				$chr = ord($encrypted[$i]);
@@ -272,7 +272,7 @@ class TCPDF_FONTS {
 			}
 			$fmetric['Leading'] = 0;
 			// get charstring data
-			$eplain = substr($eplain, (strpos($eplain, '/CharStrings') + 1));
+			$eplain = wfPhpfunc::substr($eplain, (strpos($eplain, '/CharStrings') + 1));
 			preg_match_all('#/([A-Za-z0-9\.]*)[\s][0-9]+[\s]RD[\s](.*)[\s]ND#sU', $eplain, $matches, PREG_SET_ORDER);
 			if (!empty($enc) AND isset(TCPDF_FONT_DATA::$encmap[$enc])) {
 				$enc_map = TCPDF_FONT_DATA::$encmap[$enc];
@@ -299,7 +299,7 @@ class TCPDF_FONTS {
 				$c1 = 52845;
 				$c2 = 22719;
 				$cd = $v[2];
-				$clen = strlen($cd);
+				$clen = wfPhpfunc::strlen($cd);
 				$ccom = array();
 				for ($i = 0; $i < $clen; ++$i) {
 					$chr = ord($cd[$i]);
@@ -382,7 +382,7 @@ class TCPDF_FONTS {
 			// ---------- get tables ----------
 			for ($i = 0; $i < $numTables; ++$i) {
 				// get table info
-				$tag = substr($font, $offset, 4);
+				$tag = wfPhpfunc::substr($font, $offset, 4);
 				$offset += 4;
 				$table[$tag] = array();
 				$table[$tag]['checkSum'] = TCPDF_STATIC::_getULONG($font, $offset);
@@ -508,7 +508,7 @@ class TCPDF_FONTS {
 					$stringOffset = TCPDF_STATIC::_getUSHORT($font, $offset);
 					$offset += 2;
 					$offset = ($table['name']['offset'] + $stringStorageOffset + $stringOffset);
-					$fmetric['name'] = substr($font, $offset, $stringLength);
+					$fmetric['name'] = wfPhpfunc::substr($font, $offset, $stringLength);
 					$fmetric['name'] = preg_replace('/[^a-zA-Z0-9_\-]/', '', $fmetric['name']);
 					break;
 				} else {
@@ -932,7 +932,7 @@ class TCPDF_FONTS {
 		$tlen = ($length / 4);
 		$offset = 0;
 		for ($i = 0; $i < $tlen; ++$i) {
-			$v = unpack('Ni', substr($table, $offset, 4));
+			$v = unpack('Ni', wfPhpfunc::substr($table, $offset, 4));
 			$sum += $v['i'];
 			$offset += 4;
 		}
@@ -967,7 +967,7 @@ class TCPDF_FONTS {
 		// for each table
 		for ($i = 0; $i < $numTables; ++$i) {
 			// get table info
-			$tag = substr($font, $offset, 4);
+			$tag = wfPhpfunc::substr($font, $offset, 4);
 			$offset += 4;
 			$table[$tag] = array();
 			$table[$tag]['checkSum'] = TCPDF_STATIC::_getULONG($font, $offset);
@@ -1298,7 +1298,7 @@ class TCPDF_FONTS {
 		for ($i = 0; $i < $tot_num_glyphs; ++$i) {
 			if (isset($subsetglyphs[$i])) {
 				$length = ($indexToLoc[($i + 1)] - $indexToLoc[$i]);
-				$glyf .= substr($font, ($glyf_offset + $indexToLoc[$i]), $length);
+				$glyf .= wfPhpfunc::substr($font, ($glyf_offset + $indexToLoc[$i]), $length);
 			} else {
 				$length = 0;
 			}
@@ -1316,10 +1316,10 @@ class TCPDF_FONTS {
 		$offset = 12;
 		foreach ($table as $tag => $val) {
 			if (in_array($tag, $table_names)) {
-				$table[$tag]['data'] = substr($font, $table[$tag]['offset'], $table[$tag]['length']);
+				$table[$tag]['data'] = wfPhpfunc::substr($font, $table[$tag]['offset'], $table[$tag]['length']);
 				if ($tag == 'head') {
 					// set the checkSumAdjustment to 0
-					$table[$tag]['data'] = substr($table[$tag]['data'], 0, 8)."\x0\x0\x0\x0".substr($table[$tag]['data'], 12);
+					$table[$tag]['data'] = wfPhpfunc::substr($table[$tag]['data'], 0, 8)."\x0\x0\x0\x0".substr($table[$tag]['data'], 12);
 				}
 				$pad = 4 - ($table[$tag]['length'] % 4);
 				if ($pad != 4) {
@@ -1337,7 +1337,7 @@ class TCPDF_FONTS {
 		}
 		// add loca
 		$table['loca']['data'] = $loca;
-		$table['loca']['length'] = strlen($loca);
+		$table['loca']['length'] = wfPhpfunc::strlen($loca);
 		$pad = 4 - ($table['loca']['length'] % 4);
 		if ($pad != 4) {
 			// the length of a table must be a multiple of four bytes
@@ -1349,7 +1349,7 @@ class TCPDF_FONTS {
 		$offset += $table['loca']['length'];
 		// add glyf
 		$table['glyf']['data'] = $glyf;
-		$table['glyf']['length'] = strlen($glyf);
+		$table['glyf']['length'] = wfPhpfunc::strlen($glyf);
 		$pad = 4 - ($table['glyf']['length'] % 4);
 		if ($pad != 4) {
 			// the length of a table must be a multiple of four bytes
@@ -1380,8 +1380,8 @@ class TCPDF_FONTS {
 			$font .= $data['data'];
 		}
 		// set checkSumAdjustment on head table
-		$checkSumAdjustment = 0xB1B0AFBA - self::_getTTFtableChecksum($font, strlen($font));
-		$font = substr($font, 0, $table['head']['offset'] + 8).pack('N', $checkSumAdjustment).substr($font, $table['head']['offset'] + 12);
+		$checkSumAdjustment = 0xB1B0AFBA - self::_getTTFtableChecksum($font, wfPhpfunc::strlen($font));
+		$font = wfPhpfunc::substr($font, 0, $table['head']['offset'] + 8).pack('N', $checkSumAdjustment).substr($font, $table['head']['offset'] + 12);
 		return $font;
 	}
 
@@ -1521,7 +1521,7 @@ class TCPDF_FONTS {
 	 */
 	public static function _getfontpath() {
 		if (!defined('K_PATH_FONTS') AND is_dir($fdir = realpath(dirname(__FILE__).'/../fonts'))) {
-			if (substr($fdir, -1) != '/') {
+			if (wfPhpfunc::substr($fdir, -1) != '/') {
 				$fdir .= '/';
 			}
 			define('K_PATH_FONTS', $fdir);
@@ -1792,10 +1792,10 @@ class TCPDF_FONTS {
 	 * @public static
 	 */
 	public static function UTF8ArrSubString($strarr, $start='', $end='', $unicode=true) {
-		if (strlen($start) == 0) {
+		if (wfPhpfunc::strlen($start) == 0) {
 			$start = 0;
 		}
-		if (strlen($end) == 0) {
+		if (wfPhpfunc::strlen($end) == 0) {
 			$end = count($strarr);
 		}
 		$string = '';
@@ -1815,10 +1815,10 @@ class TCPDF_FONTS {
 	 * @public static
 	 */
 	public static function UniArrSubString($uniarr, $start='', $end='') {
-		if (strlen($start) == 0) {
+		if (wfPhpfunc::strlen($start) == 0) {
 			$start = 0;
 		}
-		if (strlen($end) == 0) {
+		if (wfPhpfunc::strlen($end) == 0) {
 			$end = count($uniarr);
 		}
 		$string = '';
@@ -1935,7 +1935,7 @@ class TCPDF_FONTS {
 		$bytes = array(); // array containing single character byte sequences
 		$countbytes = 0;
 		$numbytes = 1; // number of octetc needed to represent the UTF-8 character
-		$length = strlen($uch);
+		$length = wfPhpfunc::strlen($uch);
 		for ($i = 0; $i < $length; ++$i) {
 			$char = ord($uch[$i]); // get one string character at time
 			if ($countbytes == 0) { // get starting octect

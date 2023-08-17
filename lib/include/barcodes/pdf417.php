@@ -818,28 +818,28 @@ class PDF417 {
 		$numseq = array();
 		// get numeric sequences
 		preg_match_all('/([0-9]{13,44})/', $code, $numseq, PREG_OFFSET_CAPTURE);
-		$numseq[1][] = array('', strlen($code));
+		$numseq[1][] = array('', wfPhpfunc::strlen($code));
 		$offset = 0;
 		foreach($numseq[1] as $seq) {
-			$seqlen = strlen($seq[0]);
+			$seqlen = wfPhpfunc::strlen($seq[0]);
 			if ($seq[1] > 0) {
 				// extract text sequence before the number sequence
-				$prevseq = substr($code, $offset, ($seq[1] - $offset));
+				$prevseq = wfPhpfunc::substr($code, $offset, ($seq[1] - $offset));
 				$textseq = array();
 				// get text sequences
 				preg_match_all('/([\x09\x0a\x0d\x20-\x7e]{5,})/', $prevseq, $textseq, PREG_OFFSET_CAPTURE);
-				$textseq[1][] = array('', strlen($prevseq));
+				$textseq[1][] = array('', wfPhpfunc::strlen($prevseq));
 				$txtoffset = 0;
 				foreach($textseq[1] as $txtseq) {
-					$txtseqlen = strlen($txtseq[0]);
+					$txtseqlen = wfPhpfunc::strlen($txtseq[0]);
 					if ($txtseq[1] > 0) {
 						// extract byte sequence before the text sequence
-						$prevtxtseq = substr($prevseq, $txtoffset, ($txtseq[1] - $txtoffset));
-						if (strlen($prevtxtseq) > 0) {
+						$prevtxtseq = wfPhpfunc::substr($prevseq, $txtoffset, ($txtseq[1] - $txtoffset));
+						if (wfPhpfunc::strlen($prevtxtseq) > 0) {
 							// add BYTE sequence
-							if ((strlen($prevtxtseq) == 1) AND ((count($sequence_array) > 0) AND ($sequence_array[(count($sequence_array) - 1)][0] == 900))) {
+							if ((wfPhpfunc::strlen($prevtxtseq) == 1) AND ((count($sequence_array) > 0) AND ($sequence_array[(count($sequence_array) - 1)][0] == 900))) {
 								$sequence_array[] = array(913, $prevtxtseq);
-							} elseif ((strlen($prevtxtseq) % 6) == 0) {
+							} elseif ((wfPhpfunc::strlen($prevtxtseq) % 6) == 0) {
 								$sequence_array[] = array(924, $prevtxtseq);
 							} else {
 								$sequence_array[] = array(901, $prevtxtseq);
@@ -876,7 +876,7 @@ class PDF417 {
 			case 900: { // Text Compaction mode latch
 				$submode = 0; // default Alpha sub-mode
 				$txtarr = array(); // array of characters and sub-mode switching characters
-				$codelen = strlen($code);
+				$codelen = wfPhpfunc::strlen($code);
 				for ($i = 0; $i < $codelen; ++$i) {
 					$chval = ord($code{$i});
 					if (($k = array_search($chval, $this->textsubmodes[$submode])) !== false) {
@@ -924,14 +924,14 @@ class PDF417 {
 			}
 			case 901:
 			case 924: { // Byte Compaction mode latch
-				while (($codelen = strlen($code)) > 0) {
+				while (($codelen = wfPhpfunc::strlen($code)) > 0) {
 					if ($codelen > 6) {
-						$rest = substr($code, 6);
-						$code = substr($code, 0, 6);
+						$rest = wfPhpfunc::substr($code, 6);
+						$code = wfPhpfunc::substr($code, 0, 6);
 						$sublen = 6;
 					} else {
 						$rest = '';
-						$sublen = strlen($code);
+						$sublen = wfPhpfunc::strlen($code);
 					}
 					if ($sublen == 6) {
 						$t = bcmul(''.ord($code[0]), '1099511627776');
@@ -960,10 +960,10 @@ class PDF417 {
 				break;
 			}
 			case 902: { // Numeric Compaction mode latch
-				while (($codelen = strlen($code)) > 0) {
+				while (($codelen = wfPhpfunc::strlen($code)) > 0) {
 					if ($codelen > 44) {
-						$rest = substr($code, 44);
-						$code = substr($code, 0, 44);
+						$rest = wfPhpfunc::substr($code, 44);
+						$code = wfPhpfunc::substr($code, 0, 44);
 					} else {
 						$rest = '';
 					}

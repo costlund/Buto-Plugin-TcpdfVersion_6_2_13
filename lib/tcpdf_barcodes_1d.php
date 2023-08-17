@@ -451,7 +451,7 @@ class TCPDFBarcode {
 		$code = '*'.$code.'*';
 		$bararray = array('code' => $code, 'maxw' => 0, 'maxh' => 1, 'bcode' => array());
 		$k = 0;
-		$clen = strlen($code);
+		$clen = wfPhpfunc::strlen($code);
 		for ($i = 0; $i < $clen; ++$i) {
 			$char = $code{$i};
 			if(!isset($chr[$char])) {
@@ -518,7 +518,7 @@ class TCPDFBarcode {
 			chr(120) => '+X', chr(121) => '+Y', chr(122) => '+Z', chr(123) => '%P',
 			chr(124) => '%Q', chr(125) => '%R', chr(126) => '%S', chr(127) => '%T');
 		$code_ext = '';
-		$clen = strlen($code);
+		$clen = wfPhpfunc::strlen($code);
 		for ($i = 0 ; $i < $clen; ++$i) {
 			if (ord($code{$i}) > 127) {
 				return false;
@@ -541,7 +541,7 @@ class TCPDFBarcode {
 			'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V',
 			'W', 'X', 'Y', 'Z', '-', '.', ' ', '$', '/', '+', '%');
 		$sum = 0;
-		$clen = strlen($code);
+		$clen = wfPhpfunc::strlen($code);
 		for ($i = 0 ; $i < $clen; ++$i) {
 			$k = array_keys($chars, $code{$i});
 			$sum += $k[0];
@@ -641,7 +641,7 @@ class TCPDFBarcode {
 			chr(120) => chr(130).'X', chr(121) => chr(130).'Y', chr(122) => chr(130).'Z', chr(123) => chr(131).'P',
 			chr(124) => chr(131).'Q', chr(125) => chr(131).'R', chr(126) => chr(131).'S', chr(127) => chr(131).'T');
 		$code_ext = '';
-		$clen = strlen($code);
+		$clen = wfPhpfunc::strlen($code);
 		for ($i = 0 ; $i < $clen; ++$i) {
 			if (ord($code{$i}) > 127) {
 				return false;
@@ -654,7 +654,7 @@ class TCPDFBarcode {
 		$code = '*'.$code_ext.'*';
 		$bararray = array('code' => $code, 'maxw' => 0, 'maxh' => 1, 'bcode' => array());
 		$k = 0;
-		$clen = strlen($code);
+		$clen = wfPhpfunc::strlen($code);
 		for ($i = 0; $i < $clen; ++$i) {
 			$char = ord($code{$i});
 			if(!isset($chr[$char])) {
@@ -694,7 +694,7 @@ class TCPDFBarcode {
 			'<', '=', '>', '?');
 		// translate special characters
 		$code = strtr($code, chr(128).chr(131).chr(129).chr(130), '<=>?');
-		$len = strlen($code);
+		$len = wfPhpfunc::strlen($code);
 		// calculate check digit C
 		$p = 1;
 		$check = 0;
@@ -735,7 +735,7 @@ class TCPDFBarcode {
 	 * @protected
 	 */
 	protected function checksum_s25($code) {
-		$len = strlen($code);
+		$len = wfPhpfunc::strlen($code);
 		$sum = 0;
 		for ($i = 0; $i < $len; $i+=2) {
 			$sum += $code{$i};
@@ -779,7 +779,7 @@ class TCPDFBarcode {
 		$chr['F'] = '110110110110';
 		if ($checksum) {
 			// add checksum
-			$clen = strlen($code);
+			$clen = wfPhpfunc::strlen($code);
 			$p = 2;
 			$check = 0;
 			for ($i = ($clen - 1); $i >= 0; --$i) {
@@ -796,7 +796,7 @@ class TCPDFBarcode {
 			$code .= $check;
 		}
 		$seq = '110'; // left guard
-		$clen = strlen($code);
+		$clen = wfPhpfunc::strlen($code);
 		for ($i = 0; $i < $clen; ++$i) {
 			$digit = $code{$i};
 			if (!isset($chr[$digit])) {
@@ -834,12 +834,12 @@ class TCPDFBarcode {
 			// add checksum
 			$code .= $this->checksum_s25($code);
 		}
-		if((strlen($code) % 2) != 0) {
+		if((wfPhpfunc::strlen($code) % 2) != 0) {
 			// add leading zero if code-length is odd
 			$code = '0'.$code;
 		}
 		$seq = '11011010';
-		$clen = strlen($code);
+		$clen = wfPhpfunc::strlen($code);
 		for ($i = 0; $i < $clen; ++$i) {
 			$digit = $code{$i};
 			if (!isset($chr[$digit])) {
@@ -862,7 +862,7 @@ class TCPDFBarcode {
 	 * @protected
 	 */
 	protected function binseq_to_array($seq, $bararray) {
-		$len = strlen($seq);
+		$len = wfPhpfunc::strlen($seq);
 		$w = 0;
 		$k = 0;
 		for ($i = 0; $i < $len; ++$i) {
@@ -908,7 +908,7 @@ class TCPDFBarcode {
 			// add checksum
 			$code .= $this->checksum_s25($code);
 		}
-		if((strlen($code) % 2) != 0) {
+		if((wfPhpfunc::strlen($code) % 2) != 0) {
 			// add leading zero if code-length is odd
 			$code = '0'.$code;
 		}
@@ -917,7 +917,7 @@ class TCPDFBarcode {
 
 		$bararray = array('code' => $code, 'maxw' => 0, 'maxh' => 1, 'bcode' => array());
 		$k = 0;
-		$clen = strlen($code);
+		$clen = wfPhpfunc::strlen($code);
 		for ($i = 0; $i < $clen; $i = ($i + 2)) {
 			$char_bar = $code{$i};
 			$char_space = $code{$i+1};
@@ -927,11 +927,11 @@ class TCPDFBarcode {
 			}
 			// create a bar-space sequence
 			$seq = '';
-			$chrlen = strlen($chr[$char_bar]);
+			$chrlen = wfPhpfunc::strlen($chr[$char_bar]);
 			for ($s = 0; $s < $chrlen; $s++){
 				$seq .= $chr[$char_bar]{$s} . $chr[$char_space]{$s};
 			}
-			$seqlen = strlen($seq);
+			$seqlen = wfPhpfunc::strlen($seq);
 			for ($j = 0; $j < $seqlen; ++$j) {
 				if (($j % 2) == 0) {
 					$t = true; // bar
@@ -1080,7 +1080,7 @@ class TCPDFBarcode {
 		// array of symbols
 		$code_data = array();
 		// length of the code
-		$len = strlen($code);
+		$len = wfPhpfunc::strlen($code);
 		switch(strtoupper($type)) {
 			case 'A': { // MODE A
 				$startid = 103;
@@ -1116,7 +1116,7 @@ class TCPDFBarcode {
 				$startid = 105;
 				if (ord($code[0]) == 241) {
 					$code_data[] = 102;
-					$code = substr($code, 1);
+					$code = wfPhpfunc::substr($code, 1);
 					--$len;
 				}
 				if (($len % 2) != 0) {
@@ -1145,19 +1145,19 @@ class TCPDFBarcode {
 						$offset = $val[1];
 						if ($offset > $end_offset) {
 							// non numeric sequence
-							$sequence = array_merge($sequence, $this->get128ABsequence(substr($code, $end_offset, ($offset - $end_offset))));
+							$sequence = array_merge($sequence, $this->get128ABsequence(wfPhpfunc::substr($code, $end_offset, ($offset - $end_offset))));
 						}
 						// numeric sequence
-						$slen = strlen($val[0]);
+						$slen = wfPhpfunc::strlen($val[0]);
 						if (($slen % 2) != 0) {
 							// the length must be even
 							--$slen;
 						}
-						$sequence[] = array('C', substr($code, $offset, $slen), $slen);
+						$sequence[] = array('C', wfPhpfunc::substr($code, $offset, $slen), $slen);
 						$end_offset = $offset + $slen;
 					}
 					if ($end_offset < $len) {
-						$sequence = array_merge($sequence, $this->get128ABsequence(substr($code, $end_offset)));
+						$sequence = array_merge($sequence, $this->get128ABsequence(wfPhpfunc::substr($code, $end_offset)));
 					}
 				} else {
 					// text code (non C mode)
@@ -1286,7 +1286,7 @@ class TCPDFBarcode {
 	 * @protected
 	 */
 	protected function get128ABsequence($code) {
-		$len = strlen($code);
+		$len = wfPhpfunc::strlen($code);
 		$sequence = array();
 		// get A sequences (if any)
 		$numseq = array();
@@ -1297,15 +1297,15 @@ class TCPDFBarcode {
 				$offset = $val[1];
 				if ($offset > $end_offset) {
 					// B sequence
-					$sequence[] = array('B', substr($code, $end_offset, ($offset - $end_offset)), ($offset - $end_offset));
+					$sequence[] = array('B', wfPhpfunc::substr($code, $end_offset, ($offset - $end_offset)), ($offset - $end_offset));
 				}
 				// A sequence
-				$slen = strlen($val[0]);
-				$sequence[] = array('A', substr($code, $offset, $slen), $slen);
+				$slen = wfPhpfunc::strlen($val[0]);
+				$sequence[] = array('A', wfPhpfunc::substr($code, $offset, $slen), $slen);
 				$end_offset = $offset + $slen;
 			}
 			if ($end_offset < $len) {
-				$sequence[] = array('B', substr($code, $end_offset), ($len - $end_offset));
+				$sequence[] = array('B', wfPhpfunc::substr($code, $end_offset), ($len - $end_offset));
 			}
 		} else {
 			// only B sequence
@@ -1333,7 +1333,7 @@ class TCPDFBarcode {
 		$data_len = $len - 1;
 		//Padding
 		$code = str_pad($code, $data_len, '0', STR_PAD_LEFT);
-		$code_len = strlen($code);
+		$code_len = wfPhpfunc::strlen($code);
 		// calculate check digit
 		$sum_a = 0;
 		for ($i = 1; $i < $data_len; $i+=2) {
@@ -1367,23 +1367,23 @@ class TCPDFBarcode {
 		}
 		if ($upce) {
 			// convert UPC-A to UPC-E
-			$tmp = substr($code, 4, 3);
+			$tmp = wfPhpfunc::substr($code, 4, 3);
 			if (($tmp == '000') OR ($tmp == '100') OR ($tmp == '200')) {
 				// manufacturer code ends in 000, 100, or 200
-				$upce_code = substr($code, 2, 2).substr($code, 9, 3).substr($code, 4, 1);
+				$upce_code = wfPhpfunc::substr($code, 2, 2).substr($code, 9, 3).substr($code, 4, 1);
 			} else {
-				$tmp = substr($code, 5, 2);
+				$tmp = wfPhpfunc::substr($code, 5, 2);
 				if ($tmp == '00') {
 					// manufacturer code ends in 00
-					$upce_code = substr($code, 2, 3).substr($code, 10, 2).'3';
+					$upce_code = wfPhpfunc::substr($code, 2, 3).substr($code, 10, 2).'3';
 				} else {
-					$tmp = substr($code, 6, 1);
+					$tmp = wfPhpfunc::substr($code, 6, 1);
 					if ($tmp == '0') {
 						// manufacturer code ends in 0
-						$upce_code = substr($code, 2, 4).substr($code, 11, 1).'4';
+						$upce_code = wfPhpfunc::substr($code, 2, 4).substr($code, 11, 1).'4';
 					} else {
 						// manufacturer code does not end in zero
-						$upce_code = substr($code, 2, 5).substr($code, 11, 1);
+						$upce_code = wfPhpfunc::substr($code, 2, 5).substr($code, 11, 1);
 					}
 				}
 			}
@@ -1489,7 +1489,7 @@ class TCPDFBarcode {
 			}
 			$seq .= '101'; // right guard bar
 		}
-		$clen = strlen($seq);
+		$clen = wfPhpfunc::strlen($seq);
 		$w = 0;
 		for ($i = 0; $i < $clen; ++$i) {
 			$w += 1;
@@ -1623,9 +1623,9 @@ class TCPDFBarcode {
 		}
 		$bararray = array('code' => $code, 'maxw' => 0, 'maxh' => 2, 'bcode' => array());
 		$k = 0;
-		$code = str_replace('-', '', $code);
-		$code = str_replace(' ', '', $code);
-		$len = strlen($code);
+		$code = wfPhpfunc::str_replace('-', '', $code);
+		$code = wfPhpfunc::str_replace(' ', '', $code);
+		$len = wfPhpfunc::strlen($code);
 		// calculate checksum
 		$sum = 0;
 		for ($i = 0; $i < $len; ++$i) {
@@ -1636,7 +1636,7 @@ class TCPDFBarcode {
 			$chkd = (10 - $chkd);
 		}
 		$code .= $chkd;
-		$len = strlen($code);
+		$len = wfPhpfunc::strlen($code);
 		// start bar
 		$bararray['bcode'][$k++] = array('t' => 1, 'w' => 1, 'h' => 2, 'p' => 0);
 		$bararray['bcode'][$k++] = array('t' => 0, 'w' => 1, 'h' => 2, 'p' => 0);
@@ -1711,7 +1711,7 @@ class TCPDFBarcode {
 			'Z' => array(2,2,3,3)
 		);
 		$code = strtoupper($code);
-		$len = strlen($code);
+		$len = wfPhpfunc::strlen($code);
 		$bararray = array('code' => $code, 'maxw' => 0, 'maxh' => 3, 'bcode' => array());
 		if ($notkix) {
 			// table for checksum calculation (row,col)
@@ -1844,7 +1844,7 @@ class TCPDFBarcode {
 		$w = 0;
 		$seq = '';
 		$code = 'A'.strtoupper($code).'A';
-		$len = strlen($code);
+		$len = wfPhpfunc::strlen($code);
 		for ($i = 0; $i < $len; ++$i) {
 			if (!isset($chr[$code{$i}])) {
 				return false;
@@ -1891,7 +1891,7 @@ class TCPDFBarcode {
 		$k = 0;
 		$w = 0;
 		$seq = '';
-		$len = strlen($code);
+		$len = wfPhpfunc::strlen($code);
 		// calculate check digit C
 		$p = 1;
 		$check = 0;
@@ -1976,7 +1976,7 @@ class TCPDFBarcode {
 			}
 			$code /= 2;
 		}
-		$seq = substr($seq, 0, -2);
+		$seq = wfPhpfunc::substr($seq, 0, -2);
 		$seq = strrev($seq);
 		$bararray = array('code' => $code, 'maxw' => 0, 'maxh' => 1, 'bcode' => array());
 		return $this->binseq_to_array($seq, $bararray);
@@ -2014,7 +2014,7 @@ class TCPDFBarcode {
 		$seq = strrev($seq);
 		$k = 0;
 		$bararray = array('code' => $code, 'maxw' => 0, 'maxh' => 2, 'bcode' => array());
-		$len = strlen($seq);
+		$len = wfPhpfunc::strlen($seq);
 		for ($i = 0; $i < $len; ++$i) {
 			switch ($seq{$i}) {
 				case '1': {
@@ -2064,7 +2064,7 @@ class TCPDFBarcode {
 			$routing_code = '';
 		}
 		// Conversion of Routing Code
-		switch (strlen($routing_code)) {
+		switch (wfPhpfunc::strlen($routing_code)) {
 			case 0: {
 				$binary_code = 0;
 				break;
@@ -2090,14 +2090,14 @@ class TCPDFBarcode {
 		$binary_code = bcadd($binary_code, $tracking_number[0]);
 		$binary_code = bcmul($binary_code, 5);
 		$binary_code = bcadd($binary_code, $tracking_number[1]);
-		$binary_code .= substr($tracking_number, 2, 18);
+		$binary_code .= wfPhpfunc::substr($tracking_number, 2, 18);
 		// convert to hexadecimal
 		$binary_code = $this->dec_to_hex($binary_code);
 		// pad to get 13 bytes
 		$binary_code = str_pad($binary_code, 26, '0', STR_PAD_LEFT);
 		// convert string to array of bytes
 		$binary_code_arr = chunk_split($binary_code, 2, "\r");
-		$binary_code_arr = substr($binary_code_arr, 0, -1);
+		$binary_code_arr = wfPhpfunc::substr($binary_code_arr, 0, -1);
 		$binary_code_arr = explode("\r", $binary_code_arr);
 		// calculate frame check sequence
 		$fcs = $this->imb_crc11fcs($binary_code_arr);
@@ -2253,7 +2253,7 @@ class TCPDFBarcode {
 	public function hex_to_dec($hex) {
 		$dec = 0;
 		$bitval = 1;
-		$len = strlen($hex);
+		$len = wfPhpfunc::strlen($hex);
 		for($pos = ($len - 1); $pos >= 0; --$pos) {
 			$dec = bcadd($dec, bcmul(hexdec($hex{$pos}), $bitval));
 			$bitval = bcmul($bitval, 16);

@@ -156,16 +156,16 @@ class TCPDF_FILTERS {
 		$eod = strpos($data, '>');
 		if ($eod !== false) {
 			// remove EOD and extra data (if any)
-			$data = substr($data, 0, $eod);
+			$data = wfPhpfunc::substr($data, 0, $eod);
 			$eod = true;
 		}
 		// get data length
-		$data_length = strlen($data);
+		$data_length = wfPhpfunc::strlen($data);
 		if (($data_length % 2) != 0) {
 			// odd number of hexadecimal digits
 			if ($eod) {
 				// EOD shall behave as if a 0 (zero) followed the last digit
-				$data = substr($data, 0, -1).'0'.substr($data, -1);
+				$data = wfPhpfunc::substr($data, 0, -1).'0'.substr($data, -1);
 			} else {
 				self::Error('decodeFilterASCIIHexDecode: invalid code');
 			}
@@ -195,16 +195,16 @@ class TCPDF_FILTERS {
 		// remove start sequence 2-character sequence <~ (3Ch)(7Eh)
 		if (strpos($data, '<~') !== false) {
 			// remove EOD and extra data (if any)
-			$data = substr($data, 2);
+			$data = wfPhpfunc::substr($data, 2);
 		}
 		// check for EOD: 2-character sequence ~> (7Eh)(3Eh)
 		$eod = strpos($data, '~>');
 		if ($eod !== false) {
 			// remove EOD and extra data (if any)
-			$data = substr($data, 0, $eod);
+			$data = wfPhpfunc::substr($data, 0, $eod);
 		}
 		// data length
-		$data_length = strlen($data);
+		$data_length = wfPhpfunc::strlen($data);
 		// check for invalid characters
 		if (preg_match('/[^\x21-\x75,\x74]/', $data) > 0) {
 			self::Error('decodeFilterASCII85Decode: invalid code');
@@ -275,14 +275,14 @@ class TCPDF_FILTERS {
 		// initialize string to return
 		$decoded = '';
 		// data length
-		$data_length = strlen($data);
+		$data_length = wfPhpfunc::strlen($data);
 		// convert string to binary string
 		$bitstring = '';
 		for ($i = 0; $i < $data_length; ++$i) {
 			$bitstring .= sprintf('%08b', ord($data{$i}));
 		}
 		// get the number of bits
-		$data_length = strlen($bitstring);
+		$data_length = wfPhpfunc::strlen($bitstring);
 		// initialize code length in bits
 		$bitlen = 9;
 		// initialize dictionary index
@@ -295,9 +295,9 @@ class TCPDF_FILTERS {
 		// previous val
 		$prev_index = 0;
 		// while we encounter EOD marker (257), read code_length bits
-		while (($data_length > 0) AND (($index = bindec(substr($bitstring, 0, $bitlen))) != 257)) {
+		while (($data_length > 0) AND (($index = bindec(wfPhpfunc::substr($bitstring, 0, $bitlen))) != 257)) {
 			// remove read bits from string
-			$bitstring = substr($bitstring, $bitlen);
+			$bitstring = wfPhpfunc::substr($bitstring, $bitlen);
 			// update number of bits
 			$data_length -= $bitlen;
 			if ($index == 256) { // clear-table marker
@@ -372,7 +372,7 @@ class TCPDF_FILTERS {
 		// initialize string to return
 		$decoded = '';
 		// data length
-		$data_length = strlen($data);
+		$data_length = wfPhpfunc::strlen($data);
 		$i = 0;
 		while($i < $data_length) {
 			// get current byte value
@@ -383,7 +383,7 @@ class TCPDF_FILTERS {
 			} elseif ($byte < 128) {
 				// if the length byte is in the range 0 to 127
 				// the following length + 1 (1 to 128) bytes shall be copied literally during decompression
-				$decoded .= substr($data, ($i + 1), ($byte + 1));
+				$decoded .= wfPhpfunc::substr($data, ($i + 1), ($byte + 1));
 				// move to next block
 				$i += ($byte + 2);
 			} else {

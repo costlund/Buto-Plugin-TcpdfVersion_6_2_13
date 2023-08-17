@@ -521,7 +521,7 @@ class Datamatrix {
 	 * @protected
 	 */
 	protected function lookAheadTest($data, $pos, $mode) {
-		$data_length = strlen($data);
+		$data_length = wfPhpfunc::strlen($data);
 		if ($pos >= $data_length) {
 			return $mode;
 		}
@@ -710,7 +710,7 @@ class Datamatrix {
 		$pos = 0; // current position
 		$cw = array(); // array of codewords to be returned
 		$cw_num = 0; // number of data codewords
-		$data_length = strlen($data); // number of chars
+		$data_length = wfPhpfunc::strlen($data); // number of chars
 		while ($pos < $data_length) {
 			// set last used encoding
 			$this->last_enc = $enc;
@@ -718,7 +718,7 @@ class Datamatrix {
 				case ENC_ASCII: { // STEP B. While in ASCII encodation
 					if (($data_length > 1) AND ($pos < ($data_length - 1)) AND ($this->isCharMode(ord($data[$pos]), ENC_ASCII_NUM) AND $this->isCharMode(ord($data[$pos + 1]), ENC_ASCII_NUM))) {
 						// 1. If the next data sequence is at least 2 consecutive digits, encode the next two digits as a double digit in ASCII mode.
-						$cw[] = (intval(substr($data, $pos, 2)) + 130);
+						$cw[] = (intval(wfPhpfunc::substr($data, $pos, 2)) + 130);
 						++$cw_num;
 						$pos += 2;
 					} else {

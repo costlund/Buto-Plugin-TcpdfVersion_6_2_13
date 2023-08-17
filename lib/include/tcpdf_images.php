@@ -163,7 +163,7 @@ class TCPDF_IMAGES {
 		// check if is a local file
 		if (!@file_exists($file)) {
 			// try to encode spaces on filename
-			$tfile = str_replace(' ', '%20', $file);
+			$tfile = wfPhpfunc::str_replace(' ', '%20', $file);
 			if (@file_exists($tfile)) {
 				$file = $tfile;
 			}
@@ -218,7 +218,7 @@ class TCPDF_IMAGES {
 			// number of markers (total of APP2 used)
 			$nom = max(1, ord($data[($pos + 13)]));
 			// get sequence segment
-			$icc[($msn - 1)] = substr($data, ($pos + 14), $length);
+			$icc[($msn - 1)] = wfPhpfunc::substr($data, ($pos + 14), $length);
 			// move forward to next sequence
 			$offset = ($pos + 14 + $length);
 		}

@@ -188,7 +188,7 @@ foreach ($inopt as $opt => $val) {
 		case 'o':
 		case 'outpath': {
 			$options['outpath'] = realpath($val);
-			if (substr($options['outpath'], -1) != '/') {
+			if (wfPhpfunc::substr($options['outpath'], -1) != '/') {
 				$options['outpath'] .= '/';
 			}
 			break;

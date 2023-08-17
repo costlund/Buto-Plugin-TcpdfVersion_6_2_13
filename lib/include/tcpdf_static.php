@@ -217,7 +217,7 @@ class TCPDF_STATIC {
 		}
 		if (is_string($brd)) {
 			// convert string to array
-			$slen = strlen($brd);
+			$slen = wfPhpfunc::strlen($brd);
 			$newbrd = array();
 			for ($i = 0; $i < $slen; ++$i) {
 				$newbrd[$brd[$i]] = array('cap' => 'square', 'join' => 'miter');
@@ -229,8 +229,8 @@ class TCPDF_STATIC {
 				case 'start': {
 					if (strpos($border, 'B') !== false) {
 						// remove bottom line
-						$newkey = str_replace('B', '', $border);
-						if (strlen($newkey) > 0) {
+						$newkey = wfPhpfunc::str_replace('B', '', $border);
+						if (wfPhpfunc::strlen($newkey) > 0) {
 							$brd[$newkey] = $style;
 						}
 						unset($brd[$border]);
@@ -240,8 +240,8 @@ class TCPDF_STATIC {
 				case 'middle': {
 					if (strpos($border, 'B') !== false) {
 						// remove bottom line
-						$newkey = str_replace('B', '', $border);
-						if (strlen($newkey) > 0) {
+						$newkey = wfPhpfunc::str_replace('B', '', $border);
+						if (wfPhpfunc::strlen($newkey) > 0) {
 							$brd[$newkey] = $style;
 						}
 						unset($brd[$border]);
@@ -249,8 +249,8 @@ class TCPDF_STATIC {
 					}
 					if (strpos($border, 'T') !== false) {
 						// remove bottom line
-						$newkey = str_replace('T', '', $border);
-						if (strlen($newkey) > 0) {
+						$newkey = wfPhpfunc::str_replace('T', '', $border);
+						if (wfPhpfunc::strlen($newkey) > 0) {
 							$brd[$newkey] = $style;
 						}
 						unset($brd[$border]);
@@ -260,8 +260,8 @@ class TCPDF_STATIC {
 				case 'end': {
 					if (strpos($border, 'T') !== false) {
 						// remove bottom line
-						$newkey = str_replace('T', '', $border);
-						if (strlen($newkey) > 0) {
+						$newkey = wfPhpfunc::str_replace('T', '', $border);
+						if (wfPhpfunc::strlen($newkey) > 0) {
 							$brd[$newkey] = $style;
 						}
 						unset($brd[$border]);
@@ -281,7 +281,7 @@ class TCPDF_STATIC {
 	 * @public static
 	 */
 	public static function empty_string($str) {
-		return (is_null($str) OR (is_string($str) AND (strlen($str) == 0)));
+		return (is_null($str) OR (is_string($str) AND (wfPhpfunc::strlen($str) == 0)));
 	}
 
 	/**
@@ -362,7 +362,7 @@ class TCPDF_STATIC {
 		foreach ($replace as $rep) {
 			foreach ($rep[3] as $a) {
 				if (strpos($page, $a) !== false) {
-					$page = str_replace($a, $rep[0], $page);
+					$page = wfPhpfunc::str_replace($a, $rep[0], $page);
 					$diff += ($rep[2] - $rep[1]);
 				}
 			}
@@ -380,7 +380,7 @@ class TCPDF_STATIC {
 	public static function getTimestamp($date) {
 		if (($date[0] == 'D') AND ($date[1] == ':')) {
 			// remove date prefix if present
-			$date = substr($date, 2);
+			$date = wfPhpfunc::substr($date, 2);
 		}
 		return strtotime($date);
 	}
@@ -409,7 +409,7 @@ class TCPDF_STATIC {
 		if (function_exists('posix_getpid')) {
 			$rnd .= posix_getpid();
 		}
-		if (function_exists('openssl_random_pseudo_bytes') AND (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN')) {
+		if (function_exists('openssl_random_pseudo_bytes') AND (strtoupper(wfPhpfunc::substr(PHP_OS, 0, 3)) !== 'WIN')) {
 			// this is not used on windows systems because it is very slow for a know bug
 			$rnd .= openssl_random_pseudo_bytes(512);
 		} else {
@@ -443,7 +443,7 @@ class TCPDF_STATIC {
 	 */
 	public static function _AES($key, $text) {
 		// padding (RFC 2898, PKCS #5: Password-Based Cryptography Specification Version 2.0)
-		$padding = 16 - (strlen($text) % 16);
+		$padding = 16 - (wfPhpfunc::strlen($text) % 16);
 		$text .= str_repeat(chr($padding), $padding);
 		if (extension_loaded('openssl')) {
 			$iv = openssl_random_pseudo_bytes (openssl_cipher_iv_length('aes-256-cbc'));
@@ -470,7 +470,7 @@ class TCPDF_STATIC {
 		if (extension_loaded('openssl')) {
 			$iv = str_repeat("\x00", openssl_cipher_iv_length('aes-256-cbc'));
 			$text = openssl_encrypt($text, 'aes-256-cbc', $key, OPENSSL_RAW_DATA, $iv);
-			return substr($text, 0, -16);
+			return wfPhpfunc::substr($text, 0, -16);
 		}
 		$iv = str_repeat("\x00", mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC));
 		$text = mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $key, $text, MCRYPT_MODE_CBC, $iv);
@@ -495,7 +495,7 @@ class TCPDF_STATIC {
 			return $out;
 		}
 		if ($last_enc_key != $key) {
-			$k = str_repeat($key, ((256 / strlen($key)) + 1));
+			$k = str_repeat($key, ((256 / wfPhpfunc::strlen($key)) + 1));
 			$rc4 = range(0, 255);
 			$j = 0;
 			for ($i = 0; $i < 256; ++$i) {
@@ -509,7 +509,7 @@ class TCPDF_STATIC {
 		} else {
 			$rc4 = $last_enc_key_c;
 		}
-		$len = strlen($text);
+		$len = wfPhpfunc::strlen($text);
 		$a = 0;
 		$b = 0;
 		$out = '';
@@ -572,7 +572,7 @@ class TCPDF_STATIC {
 	 */
 	public static function convertHexStringToString($bs) {
 		$string = ''; // string to be returned
-		$bslength = strlen($bs);
+		$bslength = wfPhpfunc::strlen($bs);
 		if (($bslength % 2) != 0) {
 			// padding
 			$bs .= '0';
@@ -611,10 +611,10 @@ class TCPDF_STATIC {
 	 */
 	public static function getEncPermissionsString($protection) {
 		$binprot = sprintf('%032b', $protection);
-		$str = chr(bindec(substr($binprot, 24, 8)));
-		$str .= chr(bindec(substr($binprot, 16, 8)));
-		$str .= chr(bindec(substr($binprot, 8, 8)));
-		$str .= chr(bindec(substr($binprot, 0, 8)));
+		$str = chr(bindec(wfPhpfunc::substr($binprot, 24, 8)));
+		$str .= chr(bindec(wfPhpfunc::substr($binprot, 16, 8)));
+		$str .= chr(bindec(wfPhpfunc::substr($binprot, 8, 8)));
+		$str .= chr(bindec(wfPhpfunc::substr($binprot, 0, 8)));
 		return $str;
 	}
 
@@ -628,7 +628,7 @@ class TCPDF_STATIC {
 	 */
 	public static function encodeNameObject($name) {
 		$escname = '';
-		$length = strlen($name);
+		$length = wfPhpfunc::strlen($name);
 		for ($i = 0; $i < $length; ++$i) {
 			$chr = $name[$i];
 			if (preg_match('/[0-9a-zA-Z#_=-]/', $chr) == 1) {
@@ -1078,9 +1078,9 @@ class TCPDF_STATIC {
 		$cssblocks = array();
 		$matches = array();
 		// explode css data string into array
-		if (substr($cssdata, -1) == '}') {
+		if (wfPhpfunc::substr($cssdata, -1) == '}') {
 			// remove last parethesis
-			$cssdata = substr($cssdata, 0, -1);
+			$cssdata = wfPhpfunc::substr($cssdata, 0, -1);
 		}
 		$matches = explode('}', $cssdata);
 		foreach ($matches as $key => $block) {
@@ -1167,8 +1167,8 @@ class TCPDF_STATIC {
 		$css = $tidy_head->value;
 		$css = preg_replace('/<style([^>]+)>/ims', '<style>', $css);
 		$css = preg_replace('/<\/style>(.*)<style>/ims', "\n", $css);
-		$css = str_replace('/*<![CDATA[*/', '', $css);
-		$css = str_replace('/*]]>*/', '', $css);
+		$css = wfPhpfunc::str_replace('/*<![CDATA[*/', '', $css);
+		$css = wfPhpfunc::str_replace('/*]]>*/', '', $css);
 		preg_match('/<style>(.*)<\/style>/ims', $css, $matches);
 		if (isset($matches[1])) {
 			$css = strtolower($matches[1]);
@@ -1181,7 +1181,7 @@ class TCPDF_STATIC {
 		$tidy_body = tidy_get_body($tidy);
 		$html = $tidy_body->value;
 		// fix some self-closing tags
-		$html = str_replace('<br>', '<br />', $html);
+		$html = wfPhpfunc::str_replace('<br>', '<br />', $html);
 		// remove some empty tag blocks
 		$html = preg_replace('/<div([^\>]*)><\/div>/', '', $html);
 		$html = preg_replace('/<p([^\>]*)><\/p>/', '', $html);
@@ -1229,13 +1229,13 @@ class TCPDF_STATIC {
 					// check if matches class, id, attribute, pseudo-class or pseudo-element
 					switch ($attrib[0]) {
 						case '.': { // class
-							if (in_array(substr($attrib, 1), $class)) {
+							if (in_array(wfPhpfunc::substr($attrib, 1), $class)) {
 								$valid = true;
 							}
 							break;
 						}
 						case '#': { // ID
-							if (substr($attrib, 1) == $id) {
+							if (wfPhpfunc::substr($attrib, 1) == $id) {
 								$valid = true;
 							}
 							break;
@@ -1260,13 +1260,13 @@ class TCPDF_STATIC {
 											break;
 										}
 										case '^=': {
-											if ($val == substr($dom[$key]['attribute'][$att], 0, strlen($val))) {
+											if ($val == wfPhpfunc::substr($dom[$key]['attribute'][$att], 0, wfPhpfunc::strlen($val))) {
 												$valid = true;
 											}
 											break;
 										}
 										case '$=': {
-											if ($val == substr($dom[$key]['attribute'][$att], -strlen($val))) {
+											if ($val == wfPhpfunc::substr($dom[$key]['attribute'][$att], -strlen($val))) {
 												$valid = true;
 											}
 											break;
@@ -1310,7 +1310,7 @@ class TCPDF_STATIC {
 				if ($valid AND ($offset > 0)) {
 					$valid = false;
 					// check remaining selector part
-					$selector = substr($selector, 0, $offset);
+					$selector = wfPhpfunc::substr($selector, 0, $offset);
 					switch ($operator) {
 						case ' ': { // descendant of an element
 							while ($dom[$key]['parent'] > 0) {
@@ -1373,9 +1373,9 @@ class TCPDF_STATIC {
 		foreach($css as $selector => $style) {
 			$pos = strpos($selector, ' ');
 			// get specificity
-			$specificity = substr($selector, 0, $pos);
+			$specificity = wfPhpfunc::substr($selector, 0, $pos);
 			// remove specificity
-			$selector = substr($selector, $pos);
+			$selector = wfPhpfunc::substr($selector, $pos);
 			// check if this selector apply to current tag
 			if (self::isValidCSSSelectorForTag($dom, $key, $selector)) {
 				if (!in_array($selector, $selectors)) {
@@ -1416,7 +1416,7 @@ class TCPDF_STATIC {
 				if (!empty($cmd)) {
 					$pos = strpos($cmd, ':');
 					if ($pos !== false) {
-						$cmd = substr($cmd, 0, ($pos + 1));
+						$cmd = wfPhpfunc::substr($cmd, 0, ($pos + 1));
 						if (strpos($tagstyle, $cmd) !== false) {
 							// remove duplicate commands (last commands have high priority)
 							$tagstyle = preg_replace('/'.$cmd.'[^;]+/i', '', $tagstyle);
@@ -1505,10 +1505,10 @@ class TCPDF_STATIC {
 	 * @public static
 	 */
 	public static function revstrpos($haystack, $needle, $offset = 0) {
-		$length = strlen($haystack);
+		$length = wfPhpfunc::strlen($haystack);
 		$offset = ($offset > 0)?($length - $offset):abs($offset);
 		$pos = strpos(strrev($haystack), strrev($needle), $offset);
-		return ($pos === false)?false:($length - $pos - strlen($needle));
+		return ($pos === false)?false:($length - $pos - wfPhpfunc::strlen($needle));
 	}
 
 	/**
@@ -1528,7 +1528,7 @@ class TCPDF_STATIC {
 		$data = preg_replace('/\%[^\n]*/', '', $data);
 		// extract the patterns part
 		preg_match('/\\\\patterns\{([^\}]*)\}/i', $data, $matches);
-		$data = trim(substr($matches[0], 10, -1));
+		$data = trim(wfPhpfunc::substr($matches[0], 10, -1));
 		// extract each pattern
 		$patterns_array = preg_split('/[\s]+/', $data);
 		// create new language array of patterns
@@ -1536,7 +1536,7 @@ class TCPDF_STATIC {
 		foreach($patterns_array as $val) {
 			if (!TCPDF_STATIC::empty_string($val)) {
 				$val = trim($val);
-				$val = str_replace('\'', '\\\'', $val);
+				$val = wfPhpfunc::str_replace('\'', '\\\'', $val);
 				$key = preg_replace('/[0-9]+/', '', $val);
 				$patterns[$key] = $val;
 			}
@@ -1828,11 +1828,11 @@ class TCPDF_STATIC {
 		// preg_split is bugged - try alternative solution
 		$ret = array();
 		while (($nl = strpos($subject, "\n")) !== FALSE) {
-			$ret = array_merge($ret, preg_split($pattern.$modifiers, substr($subject, 0, $nl), $limit, $flags));
+			$ret = array_merge($ret, preg_split($pattern.$modifiers, wfPhpfunc::substr($subject, 0, $nl), $limit, $flags));
 			$ret[] = "\n";
-			$subject = substr($subject, ($nl + 1));
+			$subject = wfPhpfunc::substr($subject, ($nl + 1));
 		}
-		if (strlen($subject) > 0) {
+		if (wfPhpfunc::strlen($subject) > 0) {
 			$ret = array_merge($ret, preg_split($pattern.$modifiers, $subject, $limit, $flags));
 		}
 		return $ret;
@@ -1866,7 +1866,7 @@ class TCPDF_STATIC {
 	public static function fileGetContents($file) {
 		$alt = array($file);
 		//
-		if ((strlen($file) > 1)
+		if ((wfPhpfunc::strlen($file) > 1)
 		    && ($file[0] === '/')
 		    && ($file[1] !== '/')
 		    && !empty($_SERVER['DOCUMENT_ROOT'])
@@ -1899,7 +1899,7 @@ class TCPDF_STATIC {
 				$host = $protocol.'://'.$_SERVER['HTTP_HOST'];
 				if (strpos($url, $host) === 0) {
 				    // convert URL to full server path
-				    $tmp = str_replace($host, $_SERVER['DOCUMENT_ROOT'], $url);
+				    $tmp = wfPhpfunc::str_replace($host, $_SERVER['DOCUMENT_ROOT'], $url);
 				    $alt[] = htmlspecialchars_decode(urldecode($tmp));
 				}
 			}
@@ -1967,7 +1967,7 @@ class TCPDF_STATIC {
 	 * @public static
 	 */
 	public static function _getULONG($str, $offset) {
-		$v = unpack('Ni', substr($str, $offset, 4));
+		$v = unpack('Ni', wfPhpfunc::substr($str, $offset, 4));
 		return $v['i'];
 	}
 
@@ -1981,7 +1981,7 @@ class TCPDF_STATIC {
 	 * @public static
 	 */
 	public static function _getUSHORT($str, $offset) {
-		$v = unpack('ni', substr($str, $offset, 2));
+		$v = unpack('ni', wfPhpfunc::substr($str, $offset, 2));
 		return $v['i'];
 	}
 
@@ -1995,7 +1995,7 @@ class TCPDF_STATIC {
 	 * @public static
 	 */
 	public static function _getSHORT($str, $offset) {
-		$v = unpack('si', substr($str, $offset, 2));
+		$v = unpack('si', wfPhpfunc::substr($str, $offset, 2));
 		return $v['i'];
 	}
 
@@ -2058,7 +2058,7 @@ class TCPDF_STATIC {
 	 * @public static
 	 */
 	public static function _getBYTE($str, $offset) {
-		$v = unpack('Ci', substr($str, $offset, 1));
+		$v = unpack('Ci', wfPhpfunc::substr($str, $offset, 1));
 		return $v['i'];
 	}
 	/**
@@ -2076,7 +2076,7 @@ class TCPDF_STATIC {
 		if ($data === false) {
 			return false;
 		}
-		$rest = ($length - strlen($data));
+		$rest = ($length - wfPhpfunc::strlen($data));
 		if (($rest > 0) && !feof($handle)) {
 			$data .= self::rfread($handle, $rest);
 		}

@@ -177,8 +177,8 @@ class PluginTcpdfVersion_6_2_13{
     if($item->get('data/y_minus')){
       $y = $pdf->GetY() - $item->get('data/y_minus');
     }
-    if(substr($txt, 0, 5)=='data:'){
-      $txt = $data->get(str_replace('data:', '', $txt));
+    if(wfPhpfunc::substr($txt, 0, 5)=='data:'){
+      $txt = $data->get(wfPhpfunc::str_replace('data:', '', $txt));
     }
     $pdf->MultiCell( $w, $h, $txt, $border, $align, $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
     return $pdf;
